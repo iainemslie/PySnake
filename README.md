@@ -2,9 +2,9 @@
 
 Old school Snake game made with PyGame
 
-Adapted to Python from C++ from https://www.youtube.com/watch?v=LGqsnM_WEK4&pp=ygUMc25ha2UgcmF5bGli
+Adapted to Python from C++ from [this video](https://www.youtube.com/watch?v=LGqsnM_WEK4&pp=ygUMc25ha2UgcmF5bGli)
 
-![PySnake](graphics\pysnake.png)
+![PySnake](graphics/pysnake.png)
 
 ## Setup
 
