@@ -19,13 +19,20 @@ class Timer:
 
 
 class Food(pygame.sprite.Sprite):
-    def __init__(self, surf, pos, groups):
+    def __init__(self, surf, groups):
         super().__init__(groups)
         self.image = surf
+        self.generate_random_pos()
         self.rect = self.image.get_frect(
-            topleft=(pos[0] * CELL_SIZE,
-                     pos[1] * CELL_SIZE)
+            topleft=(self.generate_random_pos()[0],
+                     self.generate_random_pos()[1])
         )
+
+    def generate_random_pos(self):
+        return (randint(0, CELL_COUNT - 1) * CELL_SIZE, randint(0, CELL_COUNT - 1) * CELL_SIZE)
+
+    def set_new_pos(self):
+        self.rect.topleft = self.generate_random_pos()
 
 
 class SnakeSegment(pygame.sprite.Sprite):
@@ -74,10 +81,7 @@ class Game:
         self.all_sprites = pygame.sprite.Group()
 
         # sprites and game objects
-        self.food = Food(
-            self.food_surf,
-            (randint(0, CELL_COUNT - 1), randint(0, CELL_COUNT - 1)),
-            self.all_sprites)
+        self.food = Food(self.food_surf, self.all_sprites)
         self.snake = Snake(self.all_sprites)
 
     def load_data(self):
@@ -85,14 +89,19 @@ class Game:
 
     def get_input(self):
         keys = pygame.key.get_pressed()
-        if keys[pygame.K_RIGHT]:
+        print(self.snake.direction)
+        if keys[pygame.K_RIGHT] and self.snake.direction.x != -1:
             self.snake.direction = pygame.Vector2(1, 0)
-        if keys[pygame.K_LEFT]:
+        if keys[pygame.K_LEFT] and self.snake.direction.x != 1:
             self.snake.direction = pygame.Vector2(-1, 0)
-        if keys[pygame.K_DOWN]:
+        if keys[pygame.K_DOWN] and self.snake.direction.y != -1:
             self.snake.direction = pygame.Vector2(0, 1)
-        if keys[pygame.K_UP]:
+        if keys[pygame.K_UP] and self.snake.direction.y != 1:
             self.snake.direction = pygame.Vector2(0, -1)
+
+    def check_food_collision(self):
+        if self.snake.body[0].rect.colliderect(self.food.rect):
+            self.food.set_new_pos()
 
     def run(self):
         while self.running:
@@ -100,11 +109,14 @@ class Game:
                 if event.type == pygame.QUIT:
                     self.running = False
 
+            # input
             self.get_input()
+
+            # logic
+            self.check_food_collision()
 
             if self.timer.update_event():
                 self.snake.update()
-
             self.all_sprites.update()
 
             # draw
