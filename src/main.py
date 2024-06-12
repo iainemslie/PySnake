@@ -21,11 +21,7 @@ class Food(pygame.sprite.Sprite):
     def __init__(self, surf, groups):
         super().__init__(groups)
         self.image = surf
-        self.generate_random_pos()
-        self.rect = self.image.get_frect(
-            topleft=(self.generate_random_pos()[0],
-                     self.generate_random_pos()[1])
-        )
+        self.rect = self.image.get_frect(topleft=self.generate_random_pos())
 
     def generate_random_pos(self):
         return (OFFSET + randint(0, CELL_COUNT - 1) * CELL_SIZE, OFFSET + randint(0, CELL_COUNT - 1) * CELL_SIZE)
